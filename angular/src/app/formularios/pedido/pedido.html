@@ -1,0 +1,359 @@
+
+<div class="min-h-screen bg-orange-50">
+
+  <!-- NAVBAR -->
+  <nav class="bg-red-800 px-6 py-4 shadow-lg">
+
+    <div class="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
+      <div class="flex items-center gap-3">
+
+        <span class="text-4xl">🍕</span>
+
+        <div>
+          <h2 class="text-xl font-extrabold text-white">
+            PIZZERÍA
+          </h2>
+
+          <p class="text-xs text-red-100">
+            Sistema de administración
+          </p>
+        </div>
+
+      </div>
+
+      <div class="flex flex-wrap gap-3">
+
+        <a
+          routerLink="/pedido"
+          routerLinkActive="!bg-white !text-red-800"
+          class="rounded-xl border border-white/40 bg-red-700 px-4 py-3 font-bold text-white hover:!bg-white hover:!text-red-800">
+          Pedidos
+        </a>
+
+        <a
+          routerLink="/detalle-pedido"
+          routerLinkActive="!bg-white !text-red-800"
+          class="rounded-xl border border-white/40 bg-red-700 px-4 py-3 font-bold text-white hover:!bg-white hover:!text-red-800">
+          Detalle de pedidos
+        </a>
+
+        <a
+          routerLink="/ventas"
+          routerLinkActive="!bg-white !text-red-800"
+          class="rounded-xl border border-white/40 bg-red-700 px-4 py-3 font-bold text-white hover:!bg-white hover:!text-red-800">
+          Ventas
+        </a>
+
+      </div>
+
+    </div>
+
+  </nav>
+
+  <main class="mx-auto max-w-6xl px-4 py-8">
+
+    <h1 class="mb-6 text-3xl font-extrabold text-red-800">
+      Registro de pedidos
+    </h1>
+
+    <!-- RECUADRO ROJO -->
+    <section class="mb-6 rounded-2xl border-2 border-red-500 bg-white p-6 shadow-md">
+
+      <h2 class="mb-5 text-xl font-extrabold text-red-800">
+        Datos del cliente
+      </h2>
+
+      <!-- FORMULARIO REACTIVO -->
+      <div
+        [formGroup]="formularioCliente"
+        class="grid gap-5 md:grid-cols-4">
+
+        <div>
+
+          <label class="mb-2 block font-bold text-gray-700">
+            Nombre
+          </label>
+
+          <input
+            type="text"
+            formControlName="nombre"
+            placeholder="Nombre completo"
+            class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-800">
+
+          <p
+            *ngIf="formularioCliente.controls.nombre.touched &&
+                   formularioCliente.controls.nombre.invalid"
+            class="mt-1 text-sm text-red-600">
+            Ingresa un nombre de al menos 3 caracteres.
+          </p>
+
+        </div>
+
+        <div>
+
+          <label class="mb-2 block font-bold text-gray-700">
+            Dirección
+          </label>
+
+          <input
+            type="text"
+            formControlName="direccion"
+            placeholder="Dirección"
+            class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-800">
+
+          <p
+            *ngIf="formularioCliente.controls.direccion.touched &&
+                   formularioCliente.controls.direccion.invalid"
+            class="mt-1 text-sm text-red-600">
+            La dirección es obligatoria.
+          </p>
+
+        </div>
+
+        <div>
+
+          <label class="mb-2 block font-bold text-gray-700">
+            Teléfono
+          </label>
+
+          <input
+            type="tel"
+            formControlName="telefono"
+            placeholder="Teléfono"
+            class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-800">
+
+          <p
+            *ngIf="formularioCliente.controls.telefono.touched &&
+                   formularioCliente.controls.telefono.invalid"
+            class="mt-1 text-sm text-red-600">
+            Ingresa un teléfono válido.
+          </p>
+
+        </div>
+
+        <div>
+
+          <label class="mb-2 block font-bold text-gray-700">
+            Fecha de compra
+          </label>
+
+          <input
+            type="date"
+            formControlName="fecha"
+            class="w-full rounded-xl border border-gray-300 px-4 py-3 text-gray-800">
+
+        </div>
+
+      </div>
+
+      <!-- TAMANOS -->
+      <h2 class="mb-4 mt-8 text-xl font-extrabold text-red-800">
+         Tamaño de pizza
+      </h2>
+
+      <div class="flex flex-wrap gap-6">
+
+        <label class="flex items-center gap-2 text-gray-800">
+          <input
+            type="radio"
+            name="tamano"
+            [(ngModel)]="tamano"
+            value="Chico">
+          Chico - $40
+        </label>
+
+        <label class="flex items-center gap-2 text-gray-800">
+          <input
+            type="radio"
+            name="tamano"
+            [(ngModel)]="tamano"
+            value="Mediano">
+          Mediano - $80
+        </label>
+
+        <label class="flex items-center gap-2 text-gray-800">
+          <input
+            type="radio"
+            name="tamano"
+            [(ngModel)]="tamano"
+            value="Grande">
+          Grande - $120
+        </label>
+
+      </div>
+
+      <!-- INGREDIENTES -->
+      <h2 class="mb-4 mt-8 text-xl font-extrabold text-red-800">
+        Ingredientes adicionales
+      </h2>
+
+      <div class="flex flex-wrap gap-6">
+
+        <label
+          *ngFor="let ingrediente of listaIngredientes"
+          class="flex items-center gap-2 text-gray-800">
+
+          <input
+            type="checkbox"
+            [checked]="ingredientes.includes(ingrediente)"
+            (change)="seleccionarIngrediente(
+              ingrediente,
+              $any($event.target).checked
+            )">
+
+          {{ ingrediente }} +$10
+
+        </label>
+
+      </div>
+
+      <!-- CANTIDAD -->
+      <div class="mt-8 flex flex-wrap items-end gap-4">
+
+        <div>
+
+          <label class="mb-2 block font-bold text-gray-700">
+            Número de pizzas
+          </label>
+
+          <input
+            type="number"
+            min="1"
+            step="1"
+            [(ngModel)]="numero_pizzas"
+            class="w-40 rounded-xl border border-gray-300 px-4 py-3 text-gray-800">
+
+        </div>
+
+        <button
+          type="button"
+          (click)="agregar()"
+          class="rounded-xl bg-red-700 px-8 py-3 font-bold text-white hover:bg-red-800">
+
+          Agregar
+
+        </button>
+
+      </div>
+
+    </section>
+
+    <!-- MENSAJES -->
+    <div
+      *ngIf="mensaje"
+      class="mb-6 rounded-xl border border-green-300 bg-green-50 p-4 font-bold text-green-800">
+
+      {{ mensaje }}
+
+    </div>
+
+    <div
+      *ngIf="error"
+      class="mb-6 rounded-xl border border-red-300 bg-red-50 p-4 font-bold text-red-800">
+
+      {{ error }}
+
+    </div>
+
+    <!-- RECUADRO AZUL -->
+    <section class="rounded-2xl border-2 border-blue-500 bg-white p-6 shadow-md">
+
+      <h2 class="mb-5 text-xl font-extrabold text-red-800">
+        Detalle del pedido
+      </h2>
+
+      <div class="overflow-x-auto">
+
+        <table class="w-full text-left">
+
+          <thead class="bg-orange-100 text-red-800">
+
+            <tr>
+              <th class="p-3">Tamaño</th>
+              <th class="p-3">Ingredientes</th>
+              <th class="p-3">Cantidad</th>
+              <th class="p-3">Subtotal</th>
+              <th class="p-3">Acción</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let pizza of pizzas; let i = index"
+              class="border-b">
+
+              <td class="p-3">
+                {{ pizza.tamano }}
+              </td>
+
+              <td class="p-3">
+                {{ pizza.ingredientes || 'Sin extras' }}
+              </td>
+
+              <td class="p-3">
+                {{ pizza.numero_pizzas }}
+              </td>
+
+              <td class="p-3 font-bold text-red-700">
+                {{ pizza.subtotal | currency:'MXN' }}
+              </td>
+
+              <td class="p-3">
+
+                <button
+                  type="button"
+                  (click)="quitar(i)"
+                  class="rounded-lg bg-red-100 px-4 py-2 font-bold text-red-700 hover:bg-red-200">
+
+                  Quitar
+
+                </button>
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+        <p
+          *ngIf="pizzas.length === 0"
+          class="py-8 text-center text-gray-400">
+
+          Todavía no hay pizzas agregadas.
+
+        </p>
+
+      </div>
+
+      <div class="mt-6 flex items-center justify-between rounded-xl bg-orange-50 p-5">
+
+        <span class="font-bold text-gray-800">
+          Total del pedido
+        </span>
+
+        <span class="text-3xl font-extrabold text-red-700">
+          {{ total | currency:'MXN' }}
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        (click)="terminar()"
+        [disabled]="guardando || pizzas.length === 0"
+        class="mt-5 w-full rounded-xl bg-green-700 px-5 py-3 font-bold text-white hover:bg-green-800 disabled:opacity-50">
+
+        {{ guardando ? 'Guardando...' : ' Terminar pedido' }}
+
+      </button>
+
+    </section>
+
+  </main>
+
+</div>

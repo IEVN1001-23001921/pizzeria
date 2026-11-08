@@ -1,0 +1,275 @@
+
+<div class="min-h-screen bg-orange-50">
+
+ 
+<!-- NAVBAR -->
+<nav class="bg-red-800 px-6 py-4 shadow-lg">
+
+  <div class="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
+    <!-- LOGO -->
+    <div class="flex items-center gap-3 text-white">
+
+      <span class="text-4xl">🍕</span>
+
+      <div>
+        <h2 class="text-xl font-extrabold text-white">
+          PIZZERÍA
+        </h2>
+
+        <p class="text-xs text-red-100">
+          Sistema de administración
+        </p>
+      </div>
+
+    </div>
+
+    <!-- ENLACES -->
+    <div class="flex flex-wrap gap-3">
+
+      <!-- PEDIDOS -->
+      <a
+        routerLink="/pedido"
+        routerLinkActive="!bg-white !text-red-800"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="rounded-xl border border-white/40 bg-red-700 px-4 py-3 text-sm font-bold text-white transition-colors hover:!bg-white hover:!text-red-800">
+
+        Pedidos
+
+      </a>
+
+      <!-- DETALLE DE PEDIDOS -->
+      <a
+        routerLink="/detalle-pedido"
+        routerLinkActive="!bg-white !text-red-800"
+        class="rounded-xl border border-white/40 bg-red-700 px-4 py-3 text-sm font-bold text-white transition-colors hover:!bg-white hover:!text-red-800">
+
+        Detalle de pedidos
+
+      </a>
+
+      <!-- VENTAS -->
+      <a
+        routerLink="/ventas"
+        routerLinkActive="!bg-white !text-red-800"
+        class="rounded-xl border border-white/40 bg-red-700 px-4 py-3 text-sm font-bold text-white transition-colors hover:!bg-white hover:!text-red-800">
+
+        Ventas
+
+      </a>
+
+    </div>
+
+  </div>
+
+</nav>
+
+
+  <main class="mx-auto max-w-6xl px-4 py-10">
+
+    <!-- TITULO -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-extrabold text-red-800">
+        Historial de pedidos
+      </h1>
+
+      <p class="mt-2 text-gray-500">
+        Todos los pedidos registrados en la base de datos.
+      </p>
+    </div>
+
+    <!-- BUSCADOR -->
+    <div class="mb-6 rounded-2xl bg-white p-6 shadow-md">
+
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
+        <div>
+          <h2 class="text-lg font-bold text-gray-800">
+            Pedidos registrados
+          </h2>
+
+          <p class="text-sm text-gray-500">
+            Total: {{pedidos.length}} pedidos
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-3 sm:flex-row">
+
+          <input
+            [(ngModel)]="filtro"
+            placeholder="Buscar por ID o cliente"
+            class="rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200">
+
+          <button
+            type="button"
+            (click)="cargarPedidos()"
+            class="rounded-xl bg-red-700 px-6 py-3 font-bold text-white hover:bg-red-800">
+            Actualizar
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MENSAJES -->
+    <div *ngIf="cargando"
+         class="rounded-xl bg-white p-6 text-center text-gray-500 shadow-md">
+      Cargando pedidos...
+    </div>
+
+    <div *ngIf="mensaje"
+         class="mb-6 rounded-xl bg-red-100 p-4 font-semibold text-red-700">
+      {{mensaje}}
+    </div>
+
+    <!-- LISTA DE PEDIDOS -->
+    <div *ngIf="!cargando" class="space-y-6">
+
+      <section *ngFor="let pedido of pedidosFiltrados"
+               class="overflow-hidden rounded-2xl bg-white shadow-md">
+
+        <!-- CABECERA -->
+        <div class="flex flex-col gap-3 bg-red-700 px-6 py-5 text-white sm:flex-row sm:items-center sm:justify-between">
+
+          <div>
+            <p class="text-sm text-red-100">
+              Número de pedido
+            </p>
+
+            <h2 class="text-2xl font-extrabold">
+              #{{pedido.idpedido}}
+            </h2>
+          </div>
+
+          <div class="sm:text-right">
+            <p class="text-sm text-red-100">
+              Total
+            </p>
+
+            <p class="text-2xl font-extrabold">
+              {{pedido.total | currency:'MXN'}}
+            </p>
+          </div>
+
+        </div>
+
+        <!-- CLIENTE -->
+        <div class="grid gap-4 border-b border-gray-100 p-6 sm:grid-cols-2 lg:grid-cols-4">
+
+          <div>
+            <p class="text-xs font-semibold uppercase text-gray-400">
+              Cliente
+            </p>
+            <p class="mt-1 font-bold text-gray-800">
+              {{pedido.nombre}}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase text-gray-400">
+              Teléfono
+            </p>
+            <p class="mt-1 font-semibold text-gray-700">
+              {{pedido.telefono}}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase text-gray-400">
+              Dirección
+            </p>
+            <p class="mt-1 font-semibold text-gray-700">
+              {{pedido.direccion}}
+            </p>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold uppercase text-gray-400">
+              Fecha
+            </p>
+            <p class="mt-1 font-semibold text-gray-700">
+              {{pedido.fecha | date:'dd/MM/yyyy'}}
+            </p>
+          </div>
+
+        </div>
+
+        <!-- PIZZAS -->
+        <div class="p-6">
+
+          <h3 class="mb-4 font-bold text-gray-800">
+            Pizzas solicitadas
+          </h3>
+
+          <div class="overflow-x-auto">
+
+            <table class="w-full min-w-[500px] text-left text-sm">
+
+              <thead class="bg-orange-50 text-red-800">
+                <tr>
+                  <th class="rounded-l-lg px-4 py-3">Tamaño</th>
+                  <th class="px-4 py-3">Ingredientes</th>
+                  <th class="px-4 py-3">Cantidad</th>
+                  <th class="rounded-r-lg px-4 py-3">Subtotal</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <tr *ngFor="let pizza of pedido.pizzas"
+                    class="border-b border-gray-100">
+
+                  <td class="px-4 py-4 font-semibold text-gray-800">
+                    {{pizza.tamano}}
+                  </td>
+
+                  <td class="px-4 py-4 text-gray-600">
+                    {{pizza.ingredientes}}
+                  </td>
+
+                  <td class="px-4 py-4 text-gray-600">
+                    {{pizza.numero_pizzas}}
+                  </td>
+
+                  <td class="px-4 py-4 font-bold text-red-700">
+                    {{pizza.subtotal | currency:'MXN'}}
+                  </td>
+
+                </tr>
+
+                <tr *ngIf="pedido.pizzas.length === 0">
+                  <td colspan="4" class="px-4 py-6 text-center text-gray-400">
+                    Este pedido no tiene pizzas registradas.
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- SIN RESULTADOS -->
+      <div *ngIf="pedidosFiltrados.length === 0 && !mensaje"
+           class="rounded-2xl bg-white p-12 text-center shadow-md">
+
+
+        <p class="mt-4 font-bold text-gray-700">
+          No se encontraron pedidos.
+        </p>
+
+        <p class="mt-2 text-sm text-gray-400">
+          Prueba con otro número o nombre de cliente.
+        </p>
+
+      </div>
+
+    </div>
+
+  </main>
+</div>
